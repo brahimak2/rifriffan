@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>RifRifanCoin - Plataforma Amazigh</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    <div class="welcome-notification" id="welcome-notification">
+        <i class="fas fa-gift"></i>
+        <span>¡Bienvenido! Has recibido 100 RIFC de bonificación.</span>
+    </div>
+    <div class="toast" id="toast"></div>
+    
+    <div class="container">
+        <div class="auth-screen" id="auth-screen">
+            <div class="logo-header">
+                <div class="logo">
+                    <i class="fas fa-coins"></i>
+                    <h1>RifRifanCoin</h1>
+                    <span class="amazigh-symbol">ⵣ</span>
+                </div>
+                <div class="tagline">Imariren n uẓawan amazigh</div>
+            </div>
+            
+            <div class="auth-form" id="login-form">
+                <h2 class="form-title">INICIAR SESIÓN</h2>
+                <div class="input-group">
+                    <label for="login-email"><i class="fas fa-envelope"></i> Correo Electrónico</label>
+                    <input type="email" id="login-email" placeholder="ejemplo@correo.com">
+                </div>
+                <div class="input-group">
+                    <label for="login-password"><i class="fas fa-lock"></i> Contraseña</label>
+                    <input type="password" id="login-password" placeholder="Ingresa tu contraseña">
+                    <i class="fas fa-eye password-toggle" id="toggle-login-password"></i>
+                </div>
+                <button class="submit-btn" id="login-submit-btn">INGRESAR</button>
+                <div class="switch-form">
+                    <span>¿No tienes cuenta?</span> <a id="switch-to-register">Regístrate ahora</a>
+                </div>
+            </div>
+            
+            <div class="auth-form" id="register-form" style="display: none;">
+                <h2 class="form-title">REGISTRARSE</h2>
+                <div class="input-group">
+                    <label for="register-name"><i class="fas fa-user"></i> Nombre Completo</label>
+                    <input type="text" id="register-name" placeholder="Juan Pérez">
+                </div>
+                <div class="input-group">
+                    <label for="register-email"><i class="fas fa-envelope"></i> Correo Electrónico</label>
+                    <input type="email" id="register-email" placeholder="nuevo@correo.com">
+                </div>
+                <div class="input-group">
+                    <label for="register-password"><i class="fas fa-lock"></i> Contraseña</label>
+                    <input type="password" id="register-password" placeholder="Mínimo 6 caracteres">
+                    <i class="fas fa-eye password-toggle" id="toggle-register-password"></i>
+                </div>
+                <div class="input-group">
+                    <label for="register-referral"><i class="fas fa-user-plus"></i> Código de Referido <span>(opcional)</span></label>
+                    <input type="text" id="register-referral" placeholder="Código de referido">
+                </div>
+                <button class="submit-btn" id="register-submit-btn">CREAR CUENTA</button>
+                <div class="switch-form">
+                    <span>¿Ya tienes cuenta?</span> <a id="switch-to-login">Inicia Sesión</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="app-container" id="app-container">
+            <div class="app-header">
+                <div class="user-info">
+                    <div class="user-avatar" id="user-avatar">JD</div>
+                    <div class="user-details">
+                        <div class="user-name" id="user-name">John Doe</div>
+                        <div class="balance">
+                            <i class="fas fa-coins"></i>
+                            <span id="balance">0 RIFC</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="app-content">
+                <div class="mining-section" id="mining-section">
+                    <h2 class="section-title">PLATAFORMA RIFC</h2>
+                    <div class="mining-container">
+                        <div class="mining-header">
+                            <div class="coin">10</div>
+                            <div class="coin" id="bonus-coin">+0</div>
+                            <div class="coin" id="bonus-coin2">+0</div>
+                        </div>
+                        <div class="mining-stats">
+                            <div class="stat">
+                                <div class="stat-value" id="bonus-referrals">0</div>
+                                <div class="stat-label">Referidos Activos</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value" id="total-to-claim">10</div>
+                                <div class="stat-label">Total a Reclamar</div>
+                            </div>
+                        </div>
+                        <div class="timer" id="timer">Listo para reclamar</div>
+                        <button class="claim-btn" id="claim-btn">RECLAMAR RIFC</button>
+                    </div>
+                </div>
+                
+                <div class="referrals-section" id="referrals-section" style="display: none;">
+                    <h2 class="section-title">TUS REFERIDOS</h2>
+                    <div class="referral-stats">
+                        <div class="stat-card">
+                            <i class="fas fa-users stat-icon"></i>
+                            <div class="stat-value" id="referral-count">0</div>
+                            <div class="stat-label">Referidos Totales</div>
+                        </div>
+                        <div class="stat-card referral-earnings">
+                            <i class="fas fa-coins stat-icon"></i>
+                            <div class="stat-value" id="referral-earnings">0</div>
+                            <div class="stat-label">RIFC Ganados</div>
+                        </div>
+                    </div>
+                    <div class="referral-link-container">
+                        <input type="text" class="referral-link" id="referral-link" value="" readonly>
+                        <button class="copy-btn" id="copy-btn">
+                            <i class="fas fa-copy"></i> Copiar Enlace
+                        </button>
+                    </div>
+                    <div class="referral-list" id="referral-list"></div>
+                </div>
+                
+                <div class="ranking-section" id="ranking-section" style="display: none;">
+                    <h2 class="section-title">CLASIFICACIÓN</h2>
+                    <div class="ranking-container">
+                        <div class="ranking-list" id="ranking-list">
+                            </div>
+                    </div>
+                </div>
+                
+                <div class="account-section" id="account-section" style="display: none;">
+                    <h2 class="section-title">CONFIGURACIÓN DE CUENTA</h2>
+                    <div class="auth-form">
+                        <div class="input-group">
+                            <label for="account-name"><i class="fas fa-user"></i> Nombre</label>
+                            <input type="text" id="account-name" placeholder="Tu nombre">
+                        </div>
+                        <div class="input-group">
+                            <label for="account-email"><i class="fas fa-envelope"></i> Correo Electrónico</label>
+                            <input type="email" id="account-email" placeholder="Tu correo" readonly>
+                        </div>
+                        <div class="input-group">
+                            <label for="account-password"><i class="fas fa-lock"></i> Nueva Contraseña</label>
+                            <input type="password" id="account-password" placeholder="Dejar en blanco para no cambiar">
+                            <i class="fas fa-eye password-toggle" id="toggle-account-password"></i>
+                        </div>
+                        <button class="submit-btn" id="save-account-btn">GUARDAR CAMBIOS</button>
+                        <button class="submit-btn" id="logout-btn" style="background: linear-gradient(135deg, var(--amazigh-accent), #e76f51); margin-top: 10px;">
+                            CERRAR SESIÓN
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="app-nav">
+                <div class="nav-btn active" id="nav-mining">
+                    <i class="fas fa-digging"></i>
+                    <span class="nav-label">Minería</span>
+                </div>
+                <div class="nav-btn" id="nav-referrals">
+                    <i class="fas fa-users"></i>
+                    <span class="nav-label">Referidos</span>
+                </div>
+                <div class="nav-btn" id="nav-ranking">
+                    <i class="fas fa-trophy"></i>
+                    <span class="nav-label">Ranking</span>
+                </div>
+                <div class="nav-btn" id="nav-account">
+                    <i class="fas fa-user-cog"></i>
+                    <span class="nav-label">Cuenta</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
